@@ -1,0 +1,32 @@
+{
+  "rows_in": 14640,
+  "rows_out": 14640,
+  "labels_preserved": true,
+  "label_counts": {
+    "negative": 9178,
+    "neutral": 3099,
+    "positive": 2363
+  },
+  "empty_after_cleaning": 11,
+  "avg_tokens_after": 9.74,
+  "vocabulary_before": {
+    "tokens": 268713,
+    "types": 15089
+  },
+  "vocabulary_after": {
+    "tokens": 142537,
+    "types": 8987
+  },
+  "vocabulary_reduction_percent": 40.44,
+  "steps": {
+    "1. decode HTML entities": "cleaning_pipeline",
+    "2. unicode normalization (NFC)": "cleaning_pipeline (fallback)",
+    "3. case folding": "cleaning_pipeline (fallback)",
+    "4. noise removal": "cleaning_pipeline (fallback)",
+    "5. tokenization": "cleaning_pipeline",
+    "6. stop-word removal (negations kept)": "cleaning_pipeline (fallback)",
+    "7. lemmatization": "cleaning_pipeline (fallback)"
+  },
+  "output_file": "data/processed/cleaned_dataset.csv",
+  "output_sha256": "7b00d2d8897b4344d9766bfdb25888ebe9f22e4a66e84a0792eb568e000a6b11"
+}

@@ -1,0 +1,50 @@
+BEFORE / AFTER: full cleaning pipeline
+========================================
+
+label : neutral
+before: '@SouthwestAir took delivery of N8661A, a new Boeing 737-8H4 yesterday. http://t.co/5z9STyUQJ3 #DFW #DAL #airlines'
+after : 'take delivery new boeing yesterday dfw dal airline'
+
+label : neutral
+before: '@SouthwestAir do you have any info about when #DestinationDragons winners will be announced? me &amp; my best friend are hoping to win. thanks!'
+after : 'info destinationdragons winner announce ? best friend hop win thank !'
+
+label : negative
+before: '@united outsourcing ticket and gate agents at MIA. Ill advised. You did it in ROC and service went downhill. Keep employees and fliers first'
+after : 'outsource ticket gate agent mia ill advise roc service go downhill keep employee flier first'
+
+label : positive
+before: '@JetBlue thanks to the gent on the phone who fixed my BOS-MCO flight and the fee waiver! A320 now :) #flyfi ! I forget her name :('
+after : 'thank gent phone fix bos mco flight fee waiver ! happyface flyfi ! forget name sadface'
+
+label : positive
+before: '@JetBlue love traveling with Jetblue. Cant wait to go to Paris oui oui!!! NYC was awesomeee!'
+after : 'love travel jetblue not wait go paris oui oui ! nyc awesomee !'
+
+label : neutral
+before: '@AmericanAir u r horrible.went online to Cancelled Flight flight-no button-4that.Called CS &amp;wait time 40 mins&amp;put in my #.800#called&amp;it hungupNOHELP'
+after : 'horrible go online cancel flight flight no button call c wait time min put call hungupnohelp'
+
+label : negative
+before: '@USAirways and despite tailwind… Will still be Late Flight.'
+after : 'despite tailwind still late flight'
+
+label : negative
+before: "@united great job losing one of my six bags on a direct flight.  Don't know how you manage to do it."
+after : 'great job lose one six bag direct flight not know manage'
+
+label : negative
+before: "@USAirways been on hold 2 hours for a Cancelled Flighted flight. I understand the delay. I don't understand you auto-reFlight Booking Problems me on TUESDAY. HELP!"
+after : 'hold hour cancel flight flight understand delay not understand auto reflight book problem tuesday help !'
+
+label : negative
+before: "@AmericanAir any idea on what the wait time is for refunds from @USAirways? I was told a few days over the phone - but it's well past that."
+after : 'idea wait time refund ? tell day phone but well past'
+
+label : neutral
+before: '@JetBlue Airways Short Interest Down 3.5% in January (JBLU) - sleekmoney http://t.co/znsUjP86Bv'
+after : 'airway short interest down january jblu sleekmoney'
+
+label : negative
+before: "@americanair the best is your 800 message saying to use website and your website is saying you need to call.  If you don't answer, #hardtodo"
+after : 'best message say use website website say need call not answer hardtodo'
