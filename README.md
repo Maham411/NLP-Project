@@ -2,7 +2,7 @@
 
 **Course:** Introduction to NLP
 **Phase:** 1 — Data Acquisition, Text Processing & Cleaning
-**Team name:** 5 Sibahi
+**Team name:** 5 Siphahi
 
 | # | Name | Roll No. | GitHub | Role (Phase 1) |
 |---|------|----------|--------|----------------|
