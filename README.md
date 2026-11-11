@@ -152,7 +152,7 @@ Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel
 
 | Member | Contribution |
 |--------|--------------|
-| Maham Iqbal | _to be filled_ |
+| Maham Iqbal | | Maham Iqbal | Data loading & dataset analysis (Task 1–2): wrote `src/load_data.py` (dataset download/loading) and `src/data_analysis.py` + `notebooks/data_analysis.ipynb` (exploration). Computed dataset statistics (size, missing values, duplicates, tweet length, target distribution, label confidence, airline breakdown), vocabulary size, tokens vs types, Zipf's law / long-tail analysis, and identified messy-text examples. Produced all exploration figures in `report/figures/` and wrote the dataset & exploration sections of the report. ||
 | Minahil Malik | _to be filled_ |
 | Tamazur Fatima | _to be filled_ |
 | Hadi Faisal | _to be filled_ |
