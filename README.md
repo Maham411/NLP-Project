@@ -55,7 +55,7 @@ Phase 1 turns the raw tweets into a clean, well-documented, analysis-ready corpu
 .
 ├── data/
 │   ├── raw/                  # Tweets.csv goes here (git-ignored)
-│   └── processed/            # cleaned output from the pipeline
+│   └── processed/            # cleaned_dataset.csv (committed, produced by the pipeline)
 ├── notebooks/
 │   ├── data_analysis.ipynb
 │   ├── tokenization_comparison.ipynb
@@ -67,9 +67,16 @@ Phase 1 turns the raw tweets into a clean, well-documented, analysis-ready corpu
 │   ├── regex_patterns.py
 │   ├── noise_removal.py
 │   ├── normalization.py
-│   └── cleaning_pipeline.py  # single reusable cleaning pipeline
+│   ├── cleaning_pipeline.py  # single reusable cleaning pipeline
+│   └── verify_reproducibility.py
+├── tests/
+│   └── test_cleaning_pipeline.py
+├── docs/
+│   └── REPRODUCIBILITY.md    # fresh-clone guide + pipeline details
 ├── report/
 │   ├── figures/              # graphs produced by the scripts
+│   ├── pipeline_summary.json # vocab before/after, label counts, output hash
+│   ├── pipeline_examples.txt # before/after cleaning examples
 │   └── ...                   # PDF report + screenshots
 ├── requirements.txt
 ├── .gitignore
@@ -99,7 +106,7 @@ pip install -r requirements.txt
 
 # 4. Download the spaCy English model and NLTK data
 python -m spacy download en_core_web_sm
-python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('stopwords'); nltk.download('wordnet')"
+python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('stopwords'); nltk.download('wordnet'); nltk.download('omw-1.4')"
 ```
 
 ---
@@ -131,15 +138,42 @@ python src/load_data.py
 # Task 2 — exploration & statistics (writes report/figures, report/stats.json, report/messy_examples.txt)
 python src/data_analysis.py
 
-# Tasks 3–5 — to be completed
-python src/cleaning_pipeline.py   # → data/processed/cleaned_tweets.csv
+# Task 4–5 — full cleaning pipeline (writes data/processed/cleaned_dataset.csv,
+#            report/pipeline_summary.json and report/pipeline_examples.txt)
+python src/cleaning_pipeline.py
+
+# Tests for the cleaning function
+python tests/test_cleaning_pipeline.py
+
+# Check that a fresh run reproduces the committed cleaned_dataset.csv exactly
+python src/verify_reproducibility.py
 ```
+
+Options: `python src/cleaning_pipeline.py --input path/to/Tweets.csv --output path/to/out.csv`
 
 Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel → Restart & Run All*.
 
 ---
 
-## 7. Team workflow
+## 7. Cleaning pipeline & reproducibility
+
+`src/cleaning_pipeline.py` holds one function, `clean_text(text)`, that every tweet goes through in this order:
+
+1. decode HTML entities → 2. Unicode NFC → 3. lowercase → 4. noise removal (URLs, @mentions, numbers; hashtags, emojis, emoticons and negations kept as words) → 5. tokenization → 6. stop-word removal (negations kept) → 7. WordNet lemmatization
+
+The cleaned file `data/processed/cleaned_dataset.csv` has one row per raw tweet, the label column `airline_sentiment` copied unchanged, the raw `text` and the new `clean_text`.
+
+| | Before | After |
+|---|---|---|
+| Vocabulary (types) | 15,089 | 8,987 |
+| Tokens | 268,713 | 142,537 |
+| Rows / labels | 14,640 | 14,640 (unchanged) |
+
+Full step-by-step justification, the output schema, the function names the pipeline expects from `noise_removal.py` and `normalization.py`, and troubleshooting are in **[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md)**.
+
+---
+
+## 8. Team workflow
 
 - `main` is protected. Nobody commits to it directly.
 - Each member works on their own branch (e.g. `feature/data-analysis`) and opens a **pull request** to merge.
@@ -148,7 +182,7 @@ Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel
 
 ---
 
-## 8. Contributions
+## 9. Contributions
 
 | Member | Contribution |
 |--------|--------------|
@@ -156,4 +190,4 @@ Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel
 | Minahil Malik | _to be filled_ |
 | Tamazur Fatima | _to be filled_ |
 | Hadi Faisal | _to be filled_ |
-| Sameer Javed | _to be filled_ |
+| Sameer Javed | Cleaning pipeline & reproducibility (Task 4–5): wrote `src/cleaning_pipeline.py` (one reusable `clean_text` function that runs every step in a fixed order and plugs in the Member 3/4 functions), generated `data/processed/cleaned_dataset.csv` with labels preserved, wrote `tests/test_cleaning_pipeline.py` and `src/verify_reproducibility.py` (fresh-run vs committed output check), added `docs/REPRODUCIBILITY.md` and the run instructions in this README, and coordinated the report formatting and screenshots. |
