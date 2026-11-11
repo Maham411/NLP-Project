@@ -97,7 +97,7 @@ The run also writes:
 
 "Before" is counted with `simple_tokenize` from `src/data_analysis.py` (Part 1), so both numbers use the same counting rule.
 
-SHA-256 of the committed CSV: `7b00d2d8897b4344d9766bfdb25888ebe9f22e4a66e84a0792eb568e000a6b11`
+SHA-256 of the committed CSV: `74dc89589c75e440b3167a8a9d3cf6742f652ce72a8647d58a449a76eefaac04`
 
 ## 5. How the teammates' functions plug in
 
@@ -116,6 +116,6 @@ After Members 3 and 4 merge their work, re-run `python src/cleaning_pipeline.py`
 ## 6. Things that can break reproducibility
 
 - **Different raw file.** The run must use the original Kaggle `Tweets.csv` (14,640 rows). Some copies on the internet were re-saved in Excel and have rounded tweet ids; those will fail the check.
-- **Library versions.** The committed CSV was produced with Python 3.13, pandas 3.0.5, nltk 3.10.4, emoji 2.16.0. Newer emoji releases can rename a few emojis; newer NLTK data can change the stop-word list. If the check fails, `verify_reproducibility.py` lists the tweets that differ.
+- **Library versions.** The committed CSV was produced with Python 3.13, pandas 3.0.5, nltk 3.10.4, emoji 2.16.0, and gives the same bytes with pandas 2.3 and 3.1. `airline_sentiment_confidence` is rounded to 4 decimals because some pandas versions parse a few of those values with float noise (0.352 → 0.35200000000000004). Newer emoji releases can rename a few emojis; newer NLTK data can change the stop-word list. If the check fails, `verify_reproducibility.py` lists the tweets that differ.
 - **Line endings.** `.gitattributes` keeps CSV files as LF on Windows, and the verify script ignores `\r\n` anyway.
 - **Editing the CSV by hand.** Don't. Always regenerate it with the script.

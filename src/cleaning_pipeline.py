@@ -195,6 +195,7 @@ def build_clean_dataset(raw):
         raise ValueError(f"raw data is missing columns: {missing}")
 
     df = raw[KEEP_COLUMNS].copy().reset_index(drop=True)
+    df["airline_sentiment_confidence"] = df["airline_sentiment_confidence"].astype(float).round(4)
     df[CLEAN_COL] = df[TEXT_COL].map(clean_text)
     df["n_tokens"] = df[CLEAN_COL].str.split().str.len().fillna(0).astype(int)
 
