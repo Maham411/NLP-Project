@@ -10,7 +10,7 @@
 | 2 | Minahil Malik | L1F23BSCS0431 | minahiltariiqq | Tokenization techniques |
 | 3 | Tamazur Fatima | L1F23BSCS1221 | tamazarfatima | Regular expressions & noise removal |
 | 4 | Hadi Faisal | L1F23BSCS0118 | muhammadhadi0594 | Text normalization |
-| 5 | Sameer Javed | L1F23BSCS0355 | sameer-javed-khan | Cleaning pipeline & reproducibility |
+| 5 | Sameer Javed Khan | L1F23BSCS0355 | sameer-javed-khan | Cleaning pipeline & reproducibility |
 
 ---
 
