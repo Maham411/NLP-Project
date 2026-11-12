@@ -1,0 +1,75 @@
+MESSY TEXT EXAMPLES: Twitter US Airline Sentiment (raw tweets)
+================================================================
+
+@mentions
+  Tweets affected: 14,640 (100.0%)
+  Example: row 0 (label: neutral)
+  Matched: '@VirginAmerica'
+  Tweet:   '@VirginAmerica What @dhepburn said.'
+
+#hashtags
+  Tweets affected: 2,375 (16.22%)
+  Example: row 13 (label: positive)
+  Matched: '#fabulous'
+  Tweet:   "@VirginAmerica @virginmedia I'm flying your #fabulous #Seductive skies again! U take all the #stress away from travel http://t.co/ahlXHhKiyn"
+
+URLs
+  Tweets affected: 1,173 (8.01%)
+  Example: row 7 (label: neutral)
+  Matched: 'https://t.co/mWpG7grEZP'
+  Tweet:   '@VirginAmerica Really missed a prime opportunity for Men Without Hats parody, there. https://t.co/mWpG7grEZP'
+
+HTML entities (&amp; &lt; &gt;)
+  Tweets affected: 720 (4.92%)
+  Example: row 3 (label: negative)
+  Matched: '&amp;'
+  Tweet:   '@VirginAmerica it\'s really aggressive to blast obnoxious "entertainment" in your guests\' faces &amp; they have little recourse'
+
+Emojis
+  Tweets affected: 487 (3.33%)
+  Example: row 18 (label: positive)
+  Matched: '❤'
+  Tweet:   'I ❤️ flying @VirginAmerica. ☺️👍'
+
+Non-ASCII characters (emojis, accents, encoding issues)
+  Tweets affected: 836 (5.71%)
+  Example: row 6 (label: positive)
+  Matched: '“'
+  Tweet:   '@VirginAmerica yes, nearly every time I fly VX this “ear worm” won’t go away :)'
+
+ALL-CAPS words (4+ letters)
+  Tweets affected: 817 (5.58%)
+  Example: row 17 (label: negative)
+  Matched: 'HELP'
+  Tweet:   "@VirginAmerica  I flew from NYC to SFO last week and couldn't fully sit in my seat due to two large gentleman on either side of me. HELP!"
+
+Repeated punctuation (!!, ??, ...)
+  Tweets affected: 1,893 (12.93%)
+  Example: row 1 (label: positive)
+  Matched: '...'
+  Tweet:   "@VirginAmerica plus you've added commercials to the experience... tacky."
+
+Elongated words (sooo, pleeease)
+  Tweets affected: 100 (0.68%)
+  Example: row 66 (label: negative)
+  Matched: 'heyyyy'
+  Tweet:   '@VirginAmerica heyyyy guyyyys.. been trying to get through for an hour. can someone call me please? :/'
+
+Missing space after comma
+  Tweets affected: 40 (0.27%)
+  Example: row 116 (label: positive)
+  Matched: 'reservation,helpful'
+  Tweet:   '@VirginAmerica is the best airline I have flown on.Easy to change your reservation,helpful representatives &amp; a comfortable flying experience'
+
+Flight numbers
+  Tweets affected: 685 (4.68%)
+  Example: row 32 (label: negative)
+  Matched: 'flight 89'
+  Tweet:   '@VirginAmerica help, left expensive headphones on flight 89 IAD to LAX today. Seat 2A. No one answering L&amp;F number at LAX!'
+
+Times (5:30, 10pm)
+  Tweets affected: 389 (2.66%)
+  Example: row 65 (label: neutral)
+  Matched: '2:10pm'
+  Tweet:   '@VirginAmerica Flight 0736 DAL to DCA 2/24 2:10pm. Tried to check in could not. Status please.'
+

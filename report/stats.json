@@ -1,0 +1,291 @@
+{
+  "basic_info": {
+    "n_rows": 14640,
+    "n_columns": 15,
+    "columns": [
+      "tweet_id",
+      "airline_sentiment",
+      "airline_sentiment_confidence",
+      "negativereason",
+      "negativereason_confidence",
+      "airline",
+      "airline_sentiment_gold",
+      "name",
+      "negativereason_gold",
+      "retweet_count",
+      "text",
+      "tweet_coord",
+      "tweet_created",
+      "tweet_location",
+      "user_timezone"
+    ],
+    "missing_values": {
+      "tweet_id": 0,
+      "airline_sentiment": 0,
+      "airline_sentiment_confidence": 0,
+      "negativereason": 5462,
+      "negativereason_confidence": 4118,
+      "airline": 0,
+      "airline_sentiment_gold": 14600,
+      "name": 0,
+      "negativereason_gold": 14608,
+      "retweet_count": 0,
+      "text": 0,
+      "tweet_coord": 13621,
+      "tweet_created": 0,
+      "tweet_location": 4733,
+      "user_timezone": 4820
+    },
+    "n_duplicate_rows": 36,
+    "n_duplicate_tweet_ids": 155,
+    "n_duplicate_texts": 213,
+    "n_unique_texts": 14427
+  },
+  "length": {
+    "mean_words": 17.65,
+    "median_words": 19.0,
+    "std_words": 6.88,
+    "min_words": 2,
+    "max_words": 36,
+    "mean_chars": 103.82,
+    "median_chars": 114.0,
+    "std_chars": 36.28,
+    "min_chars": 12,
+    "max_chars": 186
+  },
+  "target": {
+    "negative": {
+      "count": 9178,
+      "percent": 62.69
+    },
+    "neutral": {
+      "count": 3099,
+      "percent": 21.17
+    },
+    "positive": {
+      "count": 2363,
+      "percent": 16.14
+    }
+  },
+  "label_confidence": {
+    "mean_confidence": 0.9002,
+    "percent_full_agreement_1.0": 71.35,
+    "percent_below_0.5": 1.61,
+    "percent_below_0.6": 1.63
+  },
+  "sentiment_by_airline": {
+    "American": {
+      "negative": 1960,
+      "neutral": 463,
+      "positive": 336
+    },
+    "Delta": {
+      "negative": 955,
+      "neutral": 723,
+      "positive": 544
+    },
+    "Southwest": {
+      "negative": 1186,
+      "neutral": 664,
+      "positive": 570
+    },
+    "US Airways": {
+      "negative": 2263,
+      "neutral": 381,
+      "positive": 269
+    },
+    "United": {
+      "negative": 2633,
+      "neutral": 697,
+      "positive": 492
+    },
+    "Virgin America": {
+      "negative": 181,
+      "neutral": 171,
+      "positive": 152
+    }
+  },
+  "negative_reasons": {
+    "Customer Service Issue": 2910,
+    "Late Flight": 1665,
+    "Can't Tell": 1190,
+    "Cancelled Flight": 847,
+    "Lost Luggage": 724,
+    "Bad Flight": 580,
+    "Flight Booking Problems": 529,
+    "Flight Attendant Complaints": 481,
+    "longlines": 178,
+    "Damaged Luggage": 74
+  },
+  "vocabulary": {
+    "n_tokens": 268713,
+    "vocabulary_size_types": 15089,
+    "type_token_ratio": 0.0562,
+    "hapax_legomena": 8585,
+    "hapax_percent_of_vocab": 56.9,
+    "top100_words_percent_of_tokens": 54.27
+  },
+  "sample": {
+    "sample_size_tweets": 1000,
+    "random_state": 42,
+    "tokens": 18602,
+    "types": 3129,
+    "type_token_ratio": 0.1682
+  },
+  "top20_words": [
+    [
+      "to",
+      8652
+    ],
+    [
+      "i",
+      6703
+    ],
+    [
+      "the",
+      6061
+    ],
+    [
+      "a",
+      4514
+    ],
+    [
+      "you",
+      4401
+    ],
+    [
+      "united",
+      4164
+    ],
+    [
+      "for",
+      3999
+    ],
+    [
+      "flight",
+      3939
+    ],
+    [
+      "on",
+      3815
+    ],
+    [
+      "and",
+      3733
+    ],
+    [
+      "t",
+      3350
+    ],
+    [
+      "my",
+      3288
+    ],
+    [
+      "usairways",
+      3053
+    ],
+    [
+      "americanair",
+      2964
+    ],
+    [
+      "is",
+      2830
+    ],
+    [
+      "in",
+      2586
+    ],
+    [
+      "southwestair",
+      2461
+    ],
+    [
+      "it",
+      2413
+    ],
+    [
+      "jetblue",
+      2395
+    ],
+    [
+      "of",
+      2121
+    ]
+  ],
+  "messy_text": [
+    {
+      "issue": "@mentions",
+      "tweets_affected": 14640,
+      "percent_of_tweets": 100.0,
+      "example_row": 0
+    },
+    {
+      "issue": "#hashtags",
+      "tweets_affected": 2375,
+      "percent_of_tweets": 16.22,
+      "example_row": 13
+    },
+    {
+      "issue": "URLs",
+      "tweets_affected": 1173,
+      "percent_of_tweets": 8.01,
+      "example_row": 7
+    },
+    {
+      "issue": "HTML entities (&amp; &lt; &gt;)",
+      "tweets_affected": 720,
+      "percent_of_tweets": 4.92,
+      "example_row": 3
+    },
+    {
+      "issue": "Emojis",
+      "tweets_affected": 487,
+      "percent_of_tweets": 3.33,
+      "example_row": 18
+    },
+    {
+      "issue": "Non-ASCII characters (emojis, accents, encoding issues)",
+      "tweets_affected": 836,
+      "percent_of_tweets": 5.71,
+      "example_row": 6
+    },
+    {
+      "issue": "ALL-CAPS words (4+ letters)",
+      "tweets_affected": 817,
+      "percent_of_tweets": 5.58,
+      "example_row": 17
+    },
+    {
+      "issue": "Repeated punctuation (!!, ??, ...)",
+      "tweets_affected": 1893,
+      "percent_of_tweets": 12.93,
+      "example_row": 1
+    },
+    {
+      "issue": "Elongated words (sooo, pleeease)",
+      "tweets_affected": 100,
+      "percent_of_tweets": 0.68,
+      "example_row": 66
+    },
+    {
+      "issue": "Missing space after comma",
+      "tweets_affected": 40,
+      "percent_of_tweets": 0.27,
+      "example_row": 116
+    },
+    {
+      "issue": "Flight numbers",
+      "tweets_affected": 685,
+      "percent_of_tweets": 4.68,
+      "example_row": 32
+    },
+    {
+      "issue": "Times (5:30, 10pm)",
+      "tweets_affected": 389,
+      "percent_of_tweets": 2.66,
+      "example_row": 65
+    }
+  ]
+}
