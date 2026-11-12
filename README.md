@@ -1,24 +1,24 @@
-# IMDB Movie Review Sentiment Analysis — NLP Semester Project
+# US Airline Tweet Sentiment Analysis — NLP Semester Project
 
 **Course:** Introduction to NLP
 **Phase:** 1 — Data Acquisition, Text Processing & Cleaning
-**Team name:** _<Team Name>_
+**Team name:** 5 Sibahi
 
 | # | Name | Roll No. | GitHub | Role (Phase 1) |
 |---|------|----------|--------|----------------|
 | 1 | Maham Iqbal | L1F23BSCS0411 | Maham411 | Data loading & dataset analysis |
 | 2 | Minahil Malik | L1F23BSCS0431 | minahiltariiqq | Tokenization techniques |
-| 3 | _<Name>_ | _<Roll No.>_ | @_<username>_ | Regular expressions & noise removal |
-| 4 | _<Name>_ | _<Roll No.>_ | @_<username>_ | Text normalization |
-| 5 | _<Name>_ | _<Roll No.>_ | @_<username>_ | Cleaning pipeline & reproducibility |
+| 3 | Tamazur Fatima | L1F23BSCS1221 | tamazarfatima | Regular expressions & noise removal |
+| 4 | Hadi Faisal | L1F23BSCS0118 | muhammadhadi0594 | Text normalization |
+| 5 | Sameer Javed | L1F23BSCS0355 | sameer-javed-khan | Cleaning pipeline & reproducibility |
 
 ---
 
 ## 1. Project overview
 
-We are building a **binary sentiment classifier** that predicts whether an IMDB movie review is **positive** or **negative**.
+We are building a **3-class sentiment classifier** that predicts whether a tweet written to a US airline is **negative**, **neutral** or **positive**.
 
-Phase 1 turns the raw reviews into a clean, well-documented, analysis-ready corpus using a reproducible cleaning pipeline. Later phases will load the cleaned output directly.
+Phase 1 turns the raw tweets into a clean, well-documented, analysis-ready corpus using a reproducible cleaning pipeline. Later phases will load the cleaned output directly.
 
 ---
 
@@ -26,31 +26,35 @@ Phase 1 turns the raw reviews into a clean, well-documented, analysis-ready corp
 
 | Field | Details |
 |-------|---------|
-| **Name** | IMDB Dataset of 50K Movie Reviews |
-| **Source** | Kaggle — https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews |
-| **Original source** | Stanford AI Lab, Large Movie Review Dataset — http://ai.stanford.edu/~amaas/data/sentiment/ |
-| **File** | `IMDB Dataset.csv` (≈ 66 MB) |
-| **Size** | 50,000 reviews (49,582 unique — 418 duplicates) |
-| **Columns** | `review` (raw review text), `sentiment` (label) |
-| **Labels** | `positive`, `negative` (balanced, 25,000 each) |
-| **Licence** | Other (as listed on Kaggle) — data originates from the Stanford Large Movie Review Dataset; use requires citing the original paper below. |
-| **Prediction target** | `sentiment` — binary classification (positive vs. negative) |
+| **Name** | Twitter US Airline Sentiment |
+| **Source** | Kaggle — https://www.kaggle.com/datasets/crowdflower/twitter-airline-sentiment |
+| **Original creator** | Figure Eight (formerly CrowdFlower), *Data for Everyone* library |
+| **Collected** | February 2015 |
+| **Files** | `Tweets.csv` (we use this) and `database.sqlite` (same data, not used) |
+| **Size** | 14,640 tweets, 15 columns |
+| **Airlines covered** | American, Delta, Southwest, United, US Airways, Virgin America |
+| **Key columns** | `text` (raw tweet), `airline_sentiment` (label), `airline_sentiment_confidence`, `negativereason`, `airline`, `tweet_id` |
+| **Labels** | `negative`, `neutral`, `positive` (imbalanced: most tweets are negative) |
+| **Licence** | CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0) |
+| **Prediction target** | `airline_sentiment`: 3-class classification |
 
-**Why this dataset:** it is large, labelled, balanced, and contains real messy text, including HTML line breaks (`<br /><br />`), inconsistent spacing and punctuation, mixed case, accented characters, numbers, prices and ratings. That gives the tokenization and cleaning stages real problems to solve.
+**Why this dataset:** it is real, labelled social-media text, which makes it a good fit for this phase. The tweets contain @mentions, #hashtags, URLs, HTML entities (`&amp;`), emojis, elongated words ("sooo"), ALL-CAPS shouting, flight numbers and times. That gives the tokenization, regex and cleaning stages real problems to solve.
+
+**Labels were crowd-sourced.** Each tweet has an `airline_sentiment_confidence` score showing how much the human annotators agreed.
 
 **Citation:**
-> Maas, A. L., Daly, R. E., Pham, P. T., Huang, D., Ng, A. Y., & Potts, C. (2011). *Learning Word Vectors for Sentiment Analysis.* Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics (ACL 2011).
+> Figure Eight / CrowdFlower (2015). *Twitter US Airline Sentiment.* Data for Everyone. Available on Kaggle: https://www.kaggle.com/datasets/crowdflower/twitter-airline-sentiment (CC BY-NC-SA 4.0).
 
 > ⚠️ **The raw dataset is NOT committed to this repository.** Use the download step below to get it.
 
 ---
 
-## 3. Repository structure (planned)
+## 3. Repository structure
 
 ```
 .
 ├── data/
-│   ├── raw/                  # raw CSV goes here (git-ignored)
+│   ├── raw/                  # Tweets.csv goes here (git-ignored)
 │   └── processed/            # cleaned output from the pipeline
 ├── notebooks/
 │   ├── data_analysis.ipynb
@@ -58,13 +62,15 @@ Phase 1 turns the raw reviews into a clean, well-documented, analysis-ready corp
 │   └── normalization_examples.ipynb
 ├── src/
 │   ├── load_data.py          # downloads / loads the raw data
-│   ├── data_analysis.py
+│   ├── data_analysis.py      # Task 2: exploration & statistics
 │   ├── tokenization.py
 │   ├── regex_patterns.py
 │   ├── noise_removal.py
 │   ├── normalization.py
 │   └── cleaning_pipeline.py  # single reusable cleaning pipeline
-├── report/                   # PDF report + screenshots
+├── report/
+│   ├── figures/              # graphs produced by the scripts
+│   └── ...                   # PDF report + screenshots
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -100,43 +106,44 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk
 
 ## 5. Getting the data
 
-**Option A — Kaggle API (recommended)**
+**Option A — Kaggle API**
 
 1. Create a Kaggle API token: Kaggle → *Settings* → *API* → *Create New Token*. This downloads `kaggle.json`.
-2. Place it at `~/.kaggle/kaggle.json` (Windows: `C:\Users\<you>\.kaggle\kaggle.json`).
+2. Place it at `C:\Users\<you>\.kaggle\kaggle.json` (Windows) or `~/.kaggle/kaggle.json` (macOS / Linux).
 3. Run:
 
 ```bash
 python src/load_data.py
 ```
 
-This downloads and unzips `IMDB Dataset.csv` into `data/raw/`.
-
 **Option B — Manual download**
 
-Download the CSV from the Kaggle link above and place it at `data/raw/IMDB Dataset.csv`.
+Download the dataset from the Kaggle link above, unzip it, and place `Tweets.csv` at `data/raw/Tweets.csv`.
 
 ---
 
 ## 6. How to run
 
-> _To be completed as the pipeline is built._
-
 ```bash
-# Exploration & statistics
+# Task 1 — download / check the raw data
+python src/load_data.py
+
+# Task 2 — exploration & statistics (writes report/figures, report/stats.json, report/messy_examples.txt)
 python src/data_analysis.py
 
-# Full cleaning pipeline → writes data/processed/cleaned_imdb.csv
-python src/cleaning_pipeline.py
+# Tasks 3–5 — to be completed
+python src/cleaning_pipeline.py   # → data/processed/cleaned_tweets.csv
 ```
+
+Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel → Restart & Run All*.
 
 ---
 
 ## 7. Team workflow
 
 - `main` is protected. Nobody commits to it directly.
-- Each member works on their own branch (e.g. `feature/tokenization`) and opens a **pull request** to merge.
-- Commit small and often, with clear messages (e.g. `Add regex for HTML tag removal`).
+- Each member works on their own branch (e.g. `feature/data-analysis`) and opens a **pull request** to merge.
+- Commit small and often, with clear messages (e.g. `Add regex for @mentions`).
 - The final Phase 1 submission is tagged **`assignment-1`**.
 
 ---
@@ -147,6 +154,6 @@ python src/cleaning_pipeline.py
 |--------|--------------|
 | Maham Iqbal | _to be filled_ |
 | Minahil Malik | _to be filled_ |
-| _<Name 3>_ | _to be filled_ |
-| _<Name 4>_ | _to be filled_ |
-| _<Name >_ | _to be filled_ |
+| Tamazur Fatima | _to be filled_ |
+| Hadi Faisal | _to be filled_ |
+| Sameer Javed | _to be filled_ |
