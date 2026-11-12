@@ -7,26 +7,31 @@
     "neutral": 3099,
     "positive": 2363
   },
-  "empty_after_cleaning": 11,
-  "avg_tokens_after": 9.74,
+  "empty_after_cleaning": 57,
+  "avg_tokens_after": 8.19,
   "vocabulary_before": {
     "tokens": 268713,
     "types": 15089
   },
   "vocabulary_after": {
-    "tokens": 142537,
-    "types": 8987
+    "tokens": 119888,
+    "types": 8961
   },
-  "vocabulary_reduction_percent": 40.44,
+  "vocabulary_reduction_percent": 40.61,
   "steps": {
     "1. decode HTML entities": "cleaning_pipeline",
-    "2. unicode normalization (NFC)": "cleaning_pipeline (fallback)",
-    "3. case folding": "cleaning_pipeline (fallback)",
-    "4. noise removal": "cleaning_pipeline (fallback)",
-    "5. tokenization": "cleaning_pipeline",
-    "6. stop-word removal (negations kept)": "cleaning_pipeline (fallback)",
-    "7. lemmatization": "cleaning_pipeline (fallback)"
+    "2. unicode NFC + standard quotes": "normalization.normalize_unicode (Part 4)",
+    "3. case folding": "cleaning_pipeline",
+    "4. noise removal (URLs, mentions, numbers)": "noise_removal.remove_noise (Part 3)",
+    "5. keep sentiment cues": "cleaning_pipeline",
+    "6. tokenize + stop words + lemmatize": "normalization.normalize_text (Part 4)"
+  },
+  "versions": {
+    "pandas": "3.0.5",
+    "spacy": "3.8.18",
+    "spacy_model": "core_web_sm 3.8.0",
+    "emoji": "2.16.0"
   },
   "output_file": "data/processed/cleaned_dataset.csv",
-  "output_sha256": "74dc89589c75e440b3167a8a9d3cf6742f652ce72a8647d58a449a76eefaac04"
+  "output_sha256": "af10013ff447a66431f309c825db528e0db6b9689f68369bd935a50998e15335"
 }
