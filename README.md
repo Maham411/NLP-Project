@@ -157,19 +157,19 @@ Notebook version of Task 2: open `notebooks/data_analysis.ipynb` and run *Kernel
 
 ## 7. Cleaning pipeline & reproducibility
 
-`src/cleaning_pipeline.py` holds one function, `clean_text(text)`, that every tweet goes through in this order:
+`src/cleaning_pipeline.py` holds one function, `clean_text(text)`, that runs every tweet through the Part 3 and Part 4 code in a fixed order:
 
-1. decode HTML entities → 2. Unicode NFC → 3. lowercase → 4. noise removal (URLs, @mentions, numbers; hashtags, emojis, emoticons and negations kept as words) → 5. tokenization → 6. stop-word removal (negations kept) → 7. WordNet lemmatization
+1. decode HTML entities → 2. Unicode NFC (`normalize_unicode`, Part 4) + straight quotes → 3. case folding → 4. noise removal (`remove_noise`, Part 3) → 5. keep sentiment cues (emojis, `:)` / `:(`, negations, `sooo` → `soo`) → 6. tokenization, stop words and lemmatization with spaCy (`normalize_text`, Part 4)
 
 The cleaned file `data/processed/cleaned_dataset.csv` has one row per raw tweet, the label column `airline_sentiment` copied unchanged, the raw `text` and the new `clean_text`.
 
 | | Before | After |
 |---|---|---|
-| Vocabulary (types) | 15,089 | 8,987 |
-| Tokens | 268,713 | 142,537 |
+| Vocabulary (types) | 15,089 | 8,961 |
+| Tokens | 268,713 | 119,888 |
 | Rows / labels | 14,640 | 14,640 (unchanged) |
 
-Full step-by-step justification, the output schema, the function names the pipeline expects from `noise_removal.py` and `normalization.py`, and troubleshooting are in **[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md)**.
+Step-by-step justification, the output schema and troubleshooting are in **[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md)**.
 
 ---
 
