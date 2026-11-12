@@ -1,23 +1,23 @@
 import argparse
 import hashlib
 import html
-import importlib
 import json
 import re
 import sys
-import unicodedata
 from collections import Counter
 from pathlib import Path
 
 import emoji
-import nltk
 import pandas as pd
+import spacy
 
 SRC_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC_DIR))
 
 from data_analysis import simple_tokenize
 from load_data import LABEL_COL, RAW_FILE, ROOT, TEXT_COL, load_raw
+from noise_removal import remove_noise
+from normalization import nlp, normalize_text, normalize_unicode
 
 OUTPUT_FILE = ROOT / "data" / "processed" / "cleaned_dataset.csv"
 SUMMARY_FILE = ROOT / "report" / "pipeline_summary.json"
@@ -33,31 +33,16 @@ KEEP_COLUMNS = [
     TEXT_COL,
 ]
 
-NLTK_RESOURCES = {
-    "corpora/stopwords": "stopwords",
-    "corpora/wordnet": "wordnet",
-    "corpora/omw-1.4": "omw-1.4",
-}
-
 QUOTE_MAP = str.maketrans({
     "‘": "'", "’": "'", "‛": "'", "′": "'",
     "“": '"', "”": '"', "‟": '"', "″": '"',
     "–": "-", "—": "-", "…": "...", " ": " ",
 })
 
-URL_RE = re.compile(r"https?://\S+|www\.\S+")
-MENTION_RE = re.compile(r"@\w+")
-HASHTAG_RE = re.compile(r"#(\w+)")
-NUMBER_RE = re.compile(r"[$£€]?\d+(?:[.,:/-]\d+)*(?:am|pm|st|nd|rd|th|hrs?|mins?|k|s)?\b")
-HAPPY_RE = re.compile(r"(?<!\w)(?:[:;=]-?(?:\)+|\]|d\b|p\b)|\(+-?[:;=]|<3+)")
-SAD_RE = re.compile(r"(?<!\w)(?:[:;=]'?-?(?:\(+|\[|/(?!/)|\\|\|))")
+HAPPY_RE = re.compile(r"[:;=]-?\)+|[:;=]-?\]|(?<!\w)[:;=]-?[dp]\b|\(+-?[:;=]|<3+")
+SAD_RE = re.compile(r"[:;=]'?-?(?:\(+|\[|\\|\|)|(?<!\w)[:;=]'?-?/(?!/)")
 SKIN_TONE_RE = re.compile(r"_(?:medium-light|medium-dark|light|medium|dark)_skin_tone")
 ELONGATED_RE = re.compile(r"([a-z])\1{2,}")
-REPEATED_MARK_RE = re.compile(r"([!?])\1+")
-NOT_ALLOWED_RE = re.compile(r"[^a-z_!?\s]")
-SPACES_RE = re.compile(r"\s+")
-TOKEN_RE = re.compile(r"[a-z]+(?:_[a-z]+)*|[!?]")
-
 NEGATION_FIXES = [
     (re.compile(r"\bwon'?t\b"), "will not"),
     (re.compile(r"\bcan'?t\b|\bcannot\b"), "can not"),
@@ -65,131 +50,54 @@ NEGATION_FIXES = [
     (re.compile(r"\b(do|does|did|is|are|was|were|has|have|had|could|would|should|must|need)n'?t\b"), r"\1 not"),
     (re.compile(r"n't\b"), " not"),
 ]
-SUFFIX_RE = re.compile(r"'(?:s|re|ll|ve|m|d)\b")
 
-KEEP_STOPWORDS = {
-    "no", "not", "nor", "never", "against", "but",
-    "very", "too", "more", "most", "off", "out", "down",
-}
-
-
-def ensure_nltk_data():
-    for path, name in NLTK_RESOURCES.items():
-        try:
-            nltk.data.find(path)
-        except LookupError:
-            nltk.download(name, quiet=True)
+PIPELINE_STEPS = [
+    ("1. decode HTML entities", "cleaning_pipeline"),
+    ("2. unicode NFC + standard quotes", "normalization.normalize_unicode (Part 4)"),
+    ("3. case folding", "cleaning_pipeline"),
+    ("4. noise removal (URLs, mentions, numbers)", "noise_removal.remove_noise (Part 3)"),
+    ("5. keep sentiment cues", "cleaning_pipeline"),
+    ("6. tokenize + stop words + lemmatize", "normalization.normalize_text (Part 4)"),
+]
 
 
 def decode_entities(text):
     return html.unescape(str(text))
 
 
-def _normalize_unicode(text):
-    return unicodedata.normalize("NFC", text).translate(QUOTE_MAP)
+def standard_quotes(text):
+    return text.translate(QUOTE_MAP)
 
 
-def _case_fold(text):
-    return text.lower()
+def case_fold(text):
+    return text.casefold()
 
 
-def _emoji_to_word(chars, data):
+def _emoji_to_words(chars, data):
     name = SKIN_TONE_RE.sub("", data["en"].strip(":").lower())
-    name = re.sub(r"[^a-z]+", "_", name).strip("_")
-    return f" emoji_{name} "
+    return " " + re.sub(r"[^a-z]+", " ", name).strip() + " "
 
 
-def _remove_noise(text):
-    text = URL_RE.sub(" ", text)
-    text = MENTION_RE.sub(" ", text)
-    text = emoji.replace_emoji(text, replace=_emoji_to_word)
+def keep_sentiment_cues(text):
+    text = emoji.replace_emoji(text, replace=_emoji_to_words)
     text = HAPPY_RE.sub(" happyface ", text)
     text = SAD_RE.sub(" sadface ", text)
-    text = HASHTAG_RE.sub(r" \1 ", text)
-    text = NUMBER_RE.sub(" ", text)
     for pattern, replacement in NEGATION_FIXES:
         text = pattern.sub(replacement, text)
-    text = SUFFIX_RE.sub("", text)
     text = ELONGATED_RE.sub(r"\1\1", text)
-    text = REPEATED_MARK_RE.sub(r"\1", text)
-    text = NOT_ALLOWED_RE.sub(" ", text)
-    return SPACES_RE.sub(" ", text).strip()
-
-
-def tokenize(text):
-    return TOKEN_RE.findall(text)
-
-
-_stopwords = None
-_lemmatizer = None
-
-
-def _remove_stopwords(tokens):
-    global _stopwords
-    if _stopwords is None:
-        from nltk.corpus import stopwords
-        _stopwords = set(stopwords.words("english")) - KEEP_STOPWORDS
-    return [t for t in tokens if t not in _stopwords and (len(t) > 1 or t in "!?")]
-
-
-def _lemmatize_tokens(tokens):
-    global _lemmatizer
-    if _lemmatizer is None:
-        from nltk.stem import WordNetLemmatizer
-        _lemmatizer = WordNetLemmatizer()
-    out = []
-    for tok in tokens:
-        if "_" in tok or tok in ("!", "?", "happyface", "sadface"):
-            out.append(tok)
-            continue
-        lemma = _lemmatizer.lemmatize(tok, "v")
-        if lemma == tok and not tok.endswith("ss"):
-            lemma = _lemmatizer.lemmatize(tok, "n")
-        out.append(lemma)
-    return out
-
-
-def _pick(module_name, func_name, fallback):
-    try:
-        module = importlib.import_module(module_name)
-        return getattr(module, func_name), f"{module_name}.{func_name}"
-    except (ImportError, AttributeError):
-        return fallback, "cleaning_pipeline (fallback)"
-
-
-normalize_unicode, _src_unicode = _pick("normalization", "normalize_unicode", _normalize_unicode)
-case_fold, _src_case = _pick("normalization", "case_fold", _case_fold)
-remove_noise, _src_noise = _pick("noise_removal", "remove_noise", _remove_noise)
-remove_stopwords, _src_stop = _pick("normalization", "remove_stopwords", _remove_stopwords)
-lemmatize_tokens, _src_lemma = _pick("normalization", "lemmatize_tokens", _lemmatize_tokens)
-
-PIPELINE_STEPS = [
-    ("1. decode HTML entities", "cleaning_pipeline"),
-    ("2. unicode normalization (NFC)", _src_unicode),
-    ("3. case folding", _src_case),
-    ("4. noise removal", _src_noise),
-    ("5. tokenization", "cleaning_pipeline"),
-    ("6. stop-word removal (negations kept)", _src_stop),
-    ("7. lemmatization", _src_lemma),
-]
-
-
-def clean_tokens(text):
-    text = decode_entities(text)
-    text = normalize_unicode(text)
-    text = case_fold(text)
-    text = remove_noise(text)
-    tokens = tokenize(text)
-    tokens = remove_stopwords(tokens)
-    return lemmatize_tokens(tokens)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def clean_text(text):
-    return " ".join(clean_tokens(text))
+    text = decode_entities(text)
+    text = standard_quotes(normalize_unicode(text))
+    text = case_fold(text)
+    text = remove_noise(text)
+    text = keep_sentiment_cues(text)
+    return normalize_text(text)
 
 
 def build_clean_dataset(raw):
-    ensure_nltk_data()
     missing = [c for c in KEEP_COLUMNS if c not in raw.columns]
     if missing:
         raise ValueError(f"raw data is missing columns: {missing}")
@@ -236,6 +144,12 @@ def summarize(raw, df, sha):
         "vocabulary_after": after,
         "vocabulary_reduction_percent": drop,
         "steps": {name: src for name, src in PIPELINE_STEPS},
+        "versions": {
+            "pandas": pd.__version__,
+            "spacy": spacy.__version__,
+            "spacy_model": f"{nlp.meta['name']} {nlp.meta['version']}",
+            "emoji": emoji.__version__,
+        },
         "output_file": str(OUTPUT_FILE.relative_to(ROOT)).replace("\\", "/"),
         "output_sha256": sha,
     }
@@ -244,7 +158,7 @@ def summarize(raw, df, sha):
 def write_examples(df, path=EXAMPLES_FILE, n=12, seed=42):
     picks = pd.concat([
         df[df[TEXT_COL].map(lambda s: re.search(p, s) is not None)].sample(1, random_state=seed)
-        for p in [r"http", r"&amp;", r"n't|nt\b", r"[:;]-?[)(DPp]", r"(\w)\1{2,}", r"#\w+", r"[^\x00-\x7f]"]
+        for p in [r"http", r"&amp;", r"n't|n’t", r"[:;]-?[)(DPp]", r"(\w)\1{2,}", r"#\w+", r"[\U0001F300-\U0001FAFF☀-➿]"]
     ])
     rest = df.drop(picks.index).sample(n - len(picks), random_state=seed)
     lines = ["BEFORE / AFTER: full cleaning pipeline", "=" * 40, ""]
@@ -273,10 +187,10 @@ def main(argv=None):
 
     print("Cleaning pipeline steps:")
     for name, src in PIPELINE_STEPS:
-        print(f"  {name:<40} <- {src}")
+        print(f"  {name:<44} <- {src}")
 
     raw = load_input(args.input)
-    print(f"\nLoaded {len(raw):,} raw tweets")
+    print(f"\nLoaded {len(raw):,} raw tweets (spaCy takes about a minute)")
     df = build_clean_dataset(raw)
     sha = save_dataset(df, args.output)
     shown = Path(args.output).resolve()
