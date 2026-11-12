@@ -1,0 +1,10 @@
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Raw datasets (too large for GitHub)
+data/raw/
+
+# Jupyter checkpoint files
+.ipynb_checkpoints/
