@@ -1,0 +1,5 @@
+word1,word2,category,cosine_similarity
+customer,service,Similar,0.6683
+flight,airline,Similar,0.2562
+customer,weather,Unrelated,0.1774
+flight,money,Unrelated,0.3029
