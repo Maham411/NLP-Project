@@ -241,12 +241,19 @@ Phase 2 turns the cleaned tweets from Phase 1 into numbers in several ways and c
 ├── src/
 │   ├── corpus.py                     # shared corpus used by every part of Assignment 2
 │   ├── count_representations.py      # Part A1–A3: Bag of Words, TF-IDF, n-grams
-│   └── hand_worked_a4.py             # Part A4: hand worked TF-IDF and bigram check
+│   ├── hand_worked_a4.py             # Part A4: hand worked TF-IDF and bigram check
+│   ├── representation_comparison.py  # Part B3 + C4: CBOW vs Skip-gram, count vs learned
+│   └── vectorize.py                  # Part D2: raw tweet -> vector (Phase 3 interface)
+├── tests/
+│   └── test_vectorize.py             # Part D2: tests for every available representation
+├── models/                           # Part D1: saved models (word2vec_cbow.model,
+│                                     #   word2vec_skipgram.model, fasttext.model)
 ├── report/
 │   ├── figures/
 │   │   ├── part_a_top_words.png      # A1: most frequent words
 │   │   ├── part_a_idf.png            # A2: lowest and highest IDF words
-│   │   └── part_a_ngram_growth.png   # A3: feature count and sparsity as n grows
+│   │   ├── part_a_ngram_growth.png   # A3: feature count and sparsity as n grows
+│   │   └── c4_word_similarity.png    # C4: word-pair similarity, count-based vs learned
 │   └── part_a/
 │       ├── a1_bow_stats.json         # A1: shape and sparsity
 │       ├── a2_idf_lowest.csv         # A2: most common words (lowest IDF)
@@ -257,6 +264,15 @@ Phase 2 turns the cleaned tweets from Phase 1 into numbers in several ways and c
 │       ├── a3_top_trigrams.csv
 │       ├── part_a_summary.json       # all Part A numbers in one file
 │       └── A4_hand_worked_scan.pdf   # A4: handwritten calculation (CamScanner)
+│   ├── part_b/
+│   │   ├── b3_training_time.csv      # B3: CBOW vs Skip-gram training time, same settings
+│   │   └── b3_neighbours.csv         # B3: nearest neighbours, frequent vs rare words
+│   └── part_c/
+│       ├── c4_dimensionality_sparsity.csv  # C4: size, sparsity, all-zero tweets
+│       ├── c4_vocabulary_coverage.csv      # C4: corpus words each model can represent
+│       ├── c4_unseen_words.csv             # C4: misspellings / new words (OOV)
+│       ├── c4_word_similarity.csv          # C4: what each representation captures
+│       └── part_b3_c4_summary.json         # all B3 and C4 numbers in one file
 └── requirements.txt                  # adds scikit-learn and gensim
 ```
 
@@ -304,7 +320,28 @@ python src/count_representations.py
 
 # Part A4: hand worked TF-IDF weight and bigram (class method), checked against scikit-learn
 python src/hand_worked_a4.py
+
+# Part B3 + C4: CBOW vs Skip-gram and count-based vs learned representations
+# (writes report/part_b/b3_*.csv, report/part_c/c4_*.csv and report/figures/c4_word_similarity.png)
+python src/representation_comparison.py
+
+# Part D2: turn raw tweets into vectors, then test it with every available representation
+python src/vectorize.py
+python tests/test_vectorize.py
 ```
+
+**Part D2, the Phase 3 interface.** Give it a raw tweet and the name of a representation:
+
+```python
+from vectorize import vectorize, vectorize_many, available_representations
+
+available_representations()          # ['bow', 'tfidf', 'cbow', 'skipgram', 'fasttext']
+vec = vectorize("@united my bag is lost :(", "fasttext")       # numpy array, shape (100,)
+X = vectorize_many(list_of_raw_tweets, "tfidf")                # sparse matrix for bow / tfidf
+X = vectorize_many(df["clean_text"], "cbow", already_clean=True)  # skip re-cleaning the corpus
+```
+
+The raw tweet goes through the same Phase 1 cleaning (`clean_text`) as the training corpus. `bow` and `tfidf` are fitted on the shared corpus; `cbow`, `skipgram` and `fasttext` load `models/word2vec_cbow.model`, `models/word2vec_skipgram.model` and `models/fasttext.model`, and a learned representation is listed as available only once its model file is in `models/`. A tweet vector under a learned model is the mean of its word vectors; words the model has never seen are skipped by Word2Vec, while fastText builds them from character n-grams.
 
 Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` and run *Kernel → Restart Kernel and Run All Cells*.
 
@@ -315,6 +352,7 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | Part | Member | Files |
 |------|--------|-------|
 | A | **Maham Iqbal** (L1F23BSCS0411) | `src/corpus.py`, `src/count_representations.py`, `src/hand_worked_a4.py`, `notebook/part_a_count_representations.ipynb` |
+| B3, C4, D2 | **Sameer Javed Khan** (L1F23BSCS0355) | `src/representation_comparison.py`, `src/vectorize.py`, `tests/test_vectorize.py` |
 | B | _to be filled_ | |
 | C | _to be filled_ | |
 | D | _to be filled_ | |
@@ -338,4 +376,4 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | Minahil Malik | _to be filled_ |
 | Tamazur Fatima | _to be filled_ |
 | Hadi Faisal | _to be filled_ |
-| Sameer Javed | _to be filled_ |
+| Sameer Javed | B3, C4 and D2: wrote `src/representation_comparison.py` (B3 CBOW vs Skip-gram: training time under identical settings and nearest neighbours for frequent vs rare words; C4 count-based vs learned representations: dimensionality, sparsity, vocabulary coverage, misspelled and unseen words, and word-pair similarity with `report/figures/c4_word_similarity.png`), `src/vectorize.py` (D2 Phase 3 interface: `vectorize()` takes a raw tweet, runs the Phase 1 cleaning and returns its vector under `bow`, `tfidf`, `cbow`, `skipgram` or `fasttext`; `vectorize_many()` for batches) and `tests/test_vectorize.py` (9 tests run against every available representation). |
