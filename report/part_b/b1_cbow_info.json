@@ -1,0 +1,12 @@
+{
+  "model": "Word2Vec CBOW (sg=0)",
+  "tweets_used": 14429,
+  "vocabulary_size": 4409,
+  "vector_size": 100,
+  "window": 5,
+  "min_count": 2,
+  "epochs": 20,
+  "seed": 42,
+  "workers": 1,
+  "saved_to": "models/word2vec_cbow.model"
+}
