@@ -363,7 +363,7 @@ X = vectorize_many(list_of_raw_tweets, "tfidf")                # sparse matrix f
 X = vectorize_many(df["clean_text"], "cbow", already_clean=True)  # skip re-cleaning the corpus
 ```
 
-The raw tweet goes through the same Phase 1 cleaning (`clean_text`) as the training corpus. Nothing is trained or refitted when vectorizing: `bow` and `tfidf` load the vectorizers saved by `src/save_count_vectorizers.py` (`models/bow_vectorizer.joblib`, `models/tfidf_vectorizer.joblib`), and `cbow`, `skipgram` and `fasttext` load `models/word2vec_cbow.model`, `models/word2vec_skipgram.model` and `models/fasttext.model`. A representation is listed as available only once its file is in `models/`. A tweet vector under a learned model is the mean of its word vectors; words the model has never seen are skipped by Word2Vec, while fastText builds them from character n-grams.
+The raw tweet goes through the same Phase 1 cleaning (`clean_text`) as the training corpus. Nothing is trained or refitted when vectorizing: `bow` and `tfidf` load the vectorizers saved by `src/save_count_vectorizers.py` (`models/bow_vectorizer.joblib`, `models/tfidf_vectorizer.joblib`), and `cbow`, `skipgram` and `fasttext` load `models/word2vec_cbow.model` (or `cbow.model`), `models/word2vec_skipgram.model` (or `skipgram.model`) and `models/fasttext.model`. A representation is listed as available only once its file is in `models/`. A tweet vector under a learned model is the mean of its word vectors; words the model has never seen are skipped by Word2Vec, while fastText builds them from character n-grams.
 
 Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` and run *Kernel → Restart Kernel and Run All Cells*.
 

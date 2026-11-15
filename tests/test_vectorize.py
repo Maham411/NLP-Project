@@ -6,8 +6,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from corpus import documents, load_corpus
-from vectorize import (COUNT_BASED, MODEL_DIR, MODEL_FILES, REPRESENTATIONS, _count_vectorizer,
-                       available_representations, dimension, vectorize, vectorize_many)
+from vectorize import (COUNT_BASED, REPRESENTATIONS, _count_vectorizer, available_representations, dimension,
+                       model_path, vectorize, vectorize_many)
 
 RAW = "@united my flight was Cancelled Flightled again!!! worst customer service ever :("
 NAMES = available_representations()
@@ -82,7 +82,7 @@ def test_unknown_representation_is_rejected():
 def test_available_means_saved_on_disk():
     assert set(NAMES) <= set(REPRESENTATIONS)
     for name in REPRESENTATIONS:
-        assert (name in NAMES) == (MODEL_DIR / MODEL_FILES[name]).exists(), name
+        assert (name in NAMES) == model_path(name).exists(), name
 
 
 def test_count_based_load_the_saved_vectorizer_without_refitting():
@@ -90,7 +90,7 @@ def test_count_based_load_the_saved_vectorizer_without_refitting():
     for name in COUNT_BASED:
         if name not in NAMES:
             continue
-        saved = joblib.load(MODEL_DIR / MODEL_FILES[name])
+        saved = joblib.load(model_path(name))
         assert _count_vectorizer(name).vocabulary_ == saved.vocabulary_, name
 
 
