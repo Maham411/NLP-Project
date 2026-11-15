@@ -6,8 +6,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from corpus import documents, load_corpus
-from vectorize import (COUNT_BASED, REPRESENTATIONS, available_representations, dimension, vectorize,
-                       vectorize_many)
+from vectorize import (COUNT_BASED, MODEL_DIR, MODEL_FILES, REPRESENTATIONS, _count_vectorizer,
+                       available_representations, dimension, vectorize, vectorize_many)
 
 RAW = "@united my flight was Cancelled Flightled again!!! worst customer service ever :("
 NAMES = available_representations()
@@ -40,6 +40,8 @@ def test_count_based_vectors_match_the_part_a_matrix():
     from count_representations import build_bow, build_tfidf
     docs = documents(load_corpus())
     for name, build in (("bow", build_bow), ("tfidf", build_tfidf)):
+        if name not in NAMES:
+            continue
         _, X = build(docs)
         for row in (0, 5, 100):
             assert np.allclose(vectorize(docs[row], name, already_clean=True), X.getrow(row).toarray().ravel())
@@ -77,8 +79,31 @@ def test_unknown_representation_is_rejected():
     raise AssertionError("expected ValueError")
 
 
-def test_count_based_are_always_available():
-    assert set(COUNT_BASED) <= set(NAMES) <= set(REPRESENTATIONS)
+def test_available_means_saved_on_disk():
+    assert set(NAMES) <= set(REPRESENTATIONS)
+    for name in REPRESENTATIONS:
+        assert (name in NAMES) == (MODEL_DIR / MODEL_FILES[name]).exists(), name
+
+
+def test_count_based_load_the_saved_vectorizer_without_refitting():
+    import joblib
+    for name in COUNT_BASED:
+        if name not in NAMES:
+            continue
+        saved = joblib.load(MODEL_DIR / MODEL_FILES[name])
+        assert _count_vectorizer(name).vocabulary_ == saved.vocabulary_, name
+
+
+def test_missing_model_gives_a_clear_error():
+    missing = [n for n in REPRESENTATIONS if n not in NAMES]
+    if not missing:
+        return
+    try:
+        vectorize(RAW, missing[0])
+    except FileNotFoundError as e:
+        assert "models/" in str(e)
+        return
+    raise AssertionError("expected FileNotFoundError")
 
 
 if __name__ == "__main__":

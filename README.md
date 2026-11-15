@@ -243,11 +243,16 @@ Phase 2 turns the cleaned tweets from Phase 1 into numbers in several ways and c
 │   ├── count_representations.py      # Part A1–A3: Bag of Words, TF-IDF, n-grams
 │   ├── hand_worked_a4.py             # Part A4: hand worked TF-IDF and bigram check
 │   ├── representation_comparison.py  # Part B3 + C4: CBOW vs Skip-gram, count vs learned
+│   ├── save_count_vectorizers.py     # Part D1: saves the BoW and TF-IDF vectorizers once
 │   └── vectorize.py                  # Part D2: raw tweet -> vector (Phase 3 interface)
 ├── tests/
 │   └── test_vectorize.py             # Part D2: tests for every available representation
-├── models/                           # Part D1: saved models (word2vec_cbow.model,
-│                                     #   word2vec_skipgram.model, fasttext.model)
+├── models/                           # Part D1: everything Phase 3 loads, saved once
+│   ├── bow_vectorizer.joblib         #   fitted CountVectorizer (committed)
+│   ├── tfidf_vectorizer.joblib       #   fitted TfidfVectorizer (committed)
+│   ├── word2vec_cbow.model           #   Part B1
+│   ├── word2vec_skipgram.model       #   Part B2
+│   └── fasttext.model                #   Part B4
 ├── report/
 │   ├── figures/
 │   │   ├── part_a_top_words.png      # A1: most frequent words
@@ -325,6 +330,10 @@ python src/hand_worked_a4.py
 # (writes report/part_b/b3_*.csv, report/part_c/c4_*.csv and report/figures/c4_word_similarity.png)
 python src/representation_comparison.py
 
+# Part D1: save the fitted BoW and TF-IDF vectorizers to models/ (already committed, so
+# only needed if the corpus changes)
+python src/save_count_vectorizers.py
+
 # Part D2: turn raw tweets into vectors, then test it with every available representation
 python src/vectorize.py
 python tests/test_vectorize.py
@@ -341,7 +350,7 @@ X = vectorize_many(list_of_raw_tweets, "tfidf")                # sparse matrix f
 X = vectorize_many(df["clean_text"], "cbow", already_clean=True)  # skip re-cleaning the corpus
 ```
 
-The raw tweet goes through the same Phase 1 cleaning (`clean_text`) as the training corpus. `bow` and `tfidf` are fitted on the shared corpus; `cbow`, `skipgram` and `fasttext` load `models/word2vec_cbow.model`, `models/word2vec_skipgram.model` and `models/fasttext.model`, and a learned representation is listed as available only once its model file is in `models/`. A tweet vector under a learned model is the mean of its word vectors; words the model has never seen are skipped by Word2Vec, while fastText builds them from character n-grams.
+The raw tweet goes through the same Phase 1 cleaning (`clean_text`) as the training corpus. Nothing is trained or refitted when vectorizing: `bow` and `tfidf` load the vectorizers saved by `src/save_count_vectorizers.py` (`models/bow_vectorizer.joblib`, `models/tfidf_vectorizer.joblib`), and `cbow`, `skipgram` and `fasttext` load `models/word2vec_cbow.model`, `models/word2vec_skipgram.model` and `models/fasttext.model`. A representation is listed as available only once its file is in `models/`. A tweet vector under a learned model is the mean of its word vectors; words the model has never seen are skipped by Word2Vec, while fastText builds them from character n-grams.
 
 Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` and run *Kernel → Restart Kernel and Run All Cells*.
 
@@ -352,7 +361,7 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | Part | Member | Files |
 |------|--------|-------|
 | A | **Maham Iqbal** (L1F23BSCS0411) | `src/corpus.py`, `src/count_representations.py`, `src/hand_worked_a4.py`, `notebook/part_a_count_representations.ipynb` |
-| B3, C4, D2 | **Sameer Javed Khan** (L1F23BSCS0355) | `src/representation_comparison.py`, `src/vectorize.py`, `tests/test_vectorize.py` |
+| B3, C4, D1 (BoW / TF-IDF), D2 | **Sameer Javed Khan** (L1F23BSCS0355) | `src/representation_comparison.py`, `src/save_count_vectorizers.py`, `src/vectorize.py`, `tests/test_vectorize.py`, `models/*_vectorizer.joblib` |
 | B | _to be filled_ | |
 | C | _to be filled_ | |
 | D | _to be filled_ | |
@@ -376,4 +385,4 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | Minahil Malik | _to be filled_ |
 | Tamazur Fatima | _to be filled_ |
 | Hadi Faisal | _to be filled_ |
-| Sameer Javed | B3, C4 and D2: wrote `src/representation_comparison.py` (B3 CBOW vs Skip-gram: training time under identical settings and nearest neighbours for frequent vs rare words; C4 count-based vs learned representations: dimensionality, sparsity, vocabulary coverage, misspelled and unseen words, and word-pair similarity with `report/figures/c4_word_similarity.png`), `src/vectorize.py` (D2 Phase 3 interface: `vectorize()` takes a raw tweet, runs the Phase 1 cleaning and returns its vector under `bow`, `tfidf`, `cbow`, `skipgram` or `fasttext`; `vectorize_many()` for batches) and `tests/test_vectorize.py` (9 tests run against every available representation). |
+| Sameer Javed | B3, C4 and D2: wrote `src/representation_comparison.py` (B3 CBOW vs Skip-gram: training time under identical settings and nearest neighbours for frequent vs rare words; C4 count-based vs learned representations: dimensionality, sparsity, vocabulary coverage, misspelled and unseen words, and word-pair similarity with `report/figures/c4_word_similarity.png`), `src/save_count_vectorizers.py` (D1 for the count-based side: saves the fitted BoW and TF-IDF vectorizers to `models/` once), `src/vectorize.py` (D2 Phase 3 interface: `vectorize()` takes a raw tweet, runs the Phase 1 cleaning and returns its vector under `bow`, `tfidf`, `cbow`, `skipgram` or `fasttext`, loading saved files only; `vectorize_many()` for batches) and `tests/test_vectorize.py` (11 tests run against every available representation). |

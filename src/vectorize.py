@@ -7,38 +7,48 @@ import numpy as np
 SRC_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC_DIR))
 
-from corpus import ROOT, documents, load_corpus
+from corpus import ROOT
 
 MODEL_DIR = ROOT / "models"
 COUNT_BASED = ("bow", "tfidf")
+SAVED_VECTORIZERS = {
+    "bow": "bow_vectorizer.joblib",
+    "tfidf": "tfidf_vectorizer.joblib",
+}
 LEARNED = {
     "cbow": "word2vec_cbow.model",
     "skipgram": "word2vec_skipgram.model",
     "fasttext": "fasttext.model",
 }
+MODEL_FILES = {**SAVED_VECTORIZERS, **LEARNED}
 REPRESENTATIONS = COUNT_BASED + tuple(LEARNED)
+SAVE_HINT = {
+    "bow": "python src/save_count_vectorizers.py",
+    "tfidf": "python src/save_count_vectorizers.py",
+    "cbow": "the Part B1 training script",
+    "skipgram": "the Part B2 training script",
+    "fasttext": "the Part B4 training script",
+}
 
 
 def available_representations():
-    return list(COUNT_BASED) + [name for name, file in LEARNED.items() if (MODEL_DIR / file).exists()]
+    return [name for name in REPRESENTATIONS if (MODEL_DIR / MODEL_FILES[name]).exists()]
 
 
 def _check(representation):
     if representation not in REPRESENTATIONS:
         raise ValueError(f"unknown representation {representation!r}, choose from {REPRESENTATIONS}")
-    if representation in LEARNED and not (MODEL_DIR / LEARNED[representation]).exists():
+    if not (MODEL_DIR / MODEL_FILES[representation]).exists():
         raise FileNotFoundError(
-            f"{representation} model not found at models/{LEARNED[representation]}. "
-            f"Available now: {available_representations()}"
+            f"{representation} is not saved at models/{MODEL_FILES[representation]} yet. "
+            f"Run {SAVE_HINT[representation]} first. Available now: {available_representations()}"
         )
 
 
 @lru_cache(maxsize=None)
 def _count_vectorizer(representation):
-    from count_representations import build_bow, build_tfidf
-    build = build_bow if representation == "bow" else build_tfidf
-    vectorizer, _ = build(documents(load_corpus()))
-    return vectorizer
+    import joblib
+    return joblib.load(MODEL_DIR / SAVED_VECTORIZERS[representation])
 
 
 @lru_cache(maxsize=None)
@@ -114,7 +124,7 @@ def main():
     print(f"Available representations: {', '.join(names)}")
     missing = [n for n in REPRESENTATIONS if n not in names]
     if missing:
-        print(f"Missing (model file not in models/ yet): {', '.join(missing)}")
+        print(f"Missing (not saved in models/ yet): {', '.join(missing)}")
     for text in examples:
         print(f"\nraw   : {text}")
         print(f"tokens: {preprocess(text)}")
