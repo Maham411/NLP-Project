@@ -1,0 +1,16 @@
+{
+  "model": "Word2Vec Skip-gram",
+  "dataset": "data/processed/cleaned_dataset.csv",
+  "text_column": "clean_text",
+  "training_sentences": 14583,
+  "skip_gram": 1,
+  "vector_size": 100,
+  "window": 5,
+  "min_count": 2,
+  "epochs": 20,
+  "workers": 4,
+  "seed": 42,
+  "vocabulary_size": 4467,
+  "vector_matrix_shape": [4467, 100],
+  "saved_model": "models/skipgram.model"
+}
