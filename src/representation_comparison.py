@@ -13,8 +13,8 @@ SRC_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC_DIR))
 
 from corpus import ROOT, documents, load_corpus, tokenized
-from vectorize import (COUNT_BASED, LEARNED, MODEL_DIR, _count_vectorizer, _word_vectors,
-                       available_representations, vectorize_many)
+from vectorize import (COUNT_BASED, LEARNED, _count_vectorizer, _word_vectors, available_representations,
+                       model_path, vectorize_many)
 
 B_DIR = ROOT / "report" / "part_b"
 C_DIR = ROOT / "report" / "part_c"
@@ -118,7 +118,7 @@ def word_similarity_table(names, docs):
 def training_time(name):
     from gensim.models import FastText, Word2Vec
     cls = FastText if name == "fasttext" else Word2Vec
-    saved = cls.load(str(MODEL_DIR / LEARNED[name]))
+    saved = cls.load(str(model_path(name)))
     params = dict(vector_size=saved.vector_size, window=saved.window, min_count=saved.min_count,
                   epochs=saved.epochs, sg=saved.sg, negative=saved.negative, hs=saved.hs,
                   sample=saved.sample, seed=42, workers=1)

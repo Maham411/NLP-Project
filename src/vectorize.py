@@ -16,11 +16,11 @@ SAVED_VECTORIZERS = {
     "tfidf": "tfidf_vectorizer.joblib",
 }
 LEARNED = {
-    "cbow": "word2vec_cbow.model",
-    "skipgram": "word2vec_skipgram.model",
-    "fasttext": "fasttext.model",
+    "cbow": ("word2vec_cbow.model", "cbow.model"),
+    "skipgram": ("word2vec_skipgram.model", "skipgram.model"),
+    "fasttext": ("fasttext.model",),
 }
-MODEL_FILES = {**SAVED_VECTORIZERS, **LEARNED}
+MODEL_FILES = {**{k: (v,) for k, v in SAVED_VECTORIZERS.items()}, **LEARNED}
 REPRESENTATIONS = COUNT_BASED + tuple(LEARNED)
 SAVE_HINT = {
     "bow": "python src/save_count_vectorizers.py",
@@ -31,16 +31,22 @@ SAVE_HINT = {
 }
 
 
+def model_path(representation):
+    candidates = [MODEL_DIR / name for name in MODEL_FILES[representation]]
+    return next((p for p in candidates if p.exists()), candidates[0])
+
+
 def available_representations():
-    return [name for name in REPRESENTATIONS if (MODEL_DIR / MODEL_FILES[name]).exists()]
+    return [name for name in REPRESENTATIONS if model_path(name).exists()]
 
 
 def _check(representation):
     if representation not in REPRESENTATIONS:
         raise ValueError(f"unknown representation {representation!r}, choose from {REPRESENTATIONS}")
-    if not (MODEL_DIR / MODEL_FILES[representation]).exists():
+    if not model_path(representation).exists():
+        names = " or ".join(f"models/{n}" for n in MODEL_FILES[representation])
         raise FileNotFoundError(
-            f"{representation} is not saved at models/{MODEL_FILES[representation]} yet. "
+            f"{representation} is not saved at {names} yet. "
             f"Run {SAVE_HINT[representation]} first. Available now: {available_representations()}"
         )
 
@@ -48,16 +54,16 @@ def _check(representation):
 @lru_cache(maxsize=None)
 def _count_vectorizer(representation):
     import joblib
-    return joblib.load(MODEL_DIR / SAVED_VECTORIZERS[representation])
+    return joblib.load(model_path(representation))
 
 
 @lru_cache(maxsize=None)
 def _word_vectors(representation):
     if representation == "fasttext":
         from gensim.models import FastText
-        return FastText.load(str(MODEL_DIR / LEARNED[representation])).wv
+        return FastText.load(str(model_path(representation))).wv
     from gensim.models import Word2Vec
-    return Word2Vec.load(str(MODEL_DIR / LEARNED[representation])).wv
+    return Word2Vec.load(str(model_path(representation))).wv
 
 
 def preprocess(raw_text):
