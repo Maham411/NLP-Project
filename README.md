@@ -239,6 +239,8 @@ Phase 2 turns the cleaned tweets from Phase 1 into numbers in several ways and c
 ├── notebook/
 │   └── part_a_count_representations.ipynb   # Part A: BoW, TF-IDF, n-grams, A4
 ├── src/
+│   ├── cbow_similarity.py            # Part C1 + C2: CBOW similar words and cosine similarity
+│   ├── cbow_train.py                 # Part B1 + D1: trains Word2Vec CBOW and saves it
 │   ├── corpus.py                     # shared corpus used by every part of Assignment 2
 │   ├── count_representations.py      # Part A1–A3: Bag of Words, TF-IDF, n-grams
 │   ├── hand_worked_a4.py             # Part A4: hand worked TF-IDF and bigram check
@@ -270,9 +272,12 @@ Phase 2 turns the cleaned tweets from Phase 1 into numbers in several ways and c
 │       ├── part_a_summary.json       # all Part A numbers in one file
 │       └── A4_hand_worked_scan.pdf   # A4: handwritten calculation (CamScanner)
 │   ├── part_b/
+│   │   ├── b1_cbow_info.json         # B1: CBOW hyperparameters and vocabulary size
 │   │   ├── b3_training_time.csv      # B3: CBOW vs Skip-gram training time, same settings
 │   │   └── b3_neighbours.csv         # B3: nearest neighbours, frequent vs rare words
 │   └── part_c/
+│       ├── c1_cbow_neighbours.csv    # C1: top 8 similar words for 5 query words (CBOW)
+│       ├── c2_cbow_cosine.csv        # C2: cosine similarity of 4 word pairs (CBOW)
 │       ├── c4_dimensionality_sparsity.csv  # C4: size, sparsity, all-zero tweets
 │       ├── c4_vocabulary_coverage.csv      # C4: corpus words each model can represent
 │       ├── c4_unseen_words.csv             # C4: misspellings / new words (OOV)
@@ -326,6 +331,14 @@ python src/count_representations.py
 # Part A4: hand worked TF-IDF weight and bigram (class method), checked against scikit-learn
 python src/hand_worked_a4.py
 
+# Part B1 + D1: train Word2Vec CBOW and save it to models/word2vec_cbow.model
+# (writes report/part_b/b1_cbow_info.json)
+python src/cbow_train.py
+
+# Part C1 + C2: CBOW similar words and cosine similarity
+# (writes report/part_c/c1_cbow_neighbours.csv and report/part_c/c2_cbow_cosine.csv)
+python src/cbow_similarity.py
+
 # Part B3 + C4: CBOW vs Skip-gram and count-based vs learned representations
 # (writes report/part_b/b3_*.csv, report/part_c/c4_*.csv and report/figures/c4_word_similarity.png)
 python src/representation_comparison.py
@@ -362,6 +375,7 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 |------|--------|-------|
 | A | **Maham Iqbal** (L1F23BSCS0411) | `src/corpus.py`, `src/count_representations.py`, `src/hand_worked_a4.py`, `notebook/part_a_count_representations.ipynb` |
 | B3, C4, D1 (BoW / TF-IDF), D2 | **Sameer Javed Khan** (L1F23BSCS0355) | `src/representation_comparison.py`, `src/save_count_vectorizers.py`, `src/vectorize.py`, `tests/test_vectorize.py`, `models/*_vectorizer.joblib` |
+| B1, C1, C2, D1 (CBOW) | **Minahil Malik** (L1F23BSCS0431) | `src/cbow_train.py`, `src/cbow_similarity.py`, `models/word2vec_cbow.model`, `report/part_b/b1_cbow_info.json`, `report/part_c/c1_cbow_neighbours.csv`, `report/part_c/c2_cbow_cosine.csv` |
 | B | _to be filled_ | |
 | C | _to be filled_ | |
 | D | _to be filled_ | |
@@ -375,6 +389,15 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | A3 N-grams | 8,961 unigrams → 74,529 with bigrams → 157,601 with trigrams. 88% of these appear in only one tweet. min_df = 2 keeps 18,598 |
 | A4 Hand worked | TF-IDF(hawaii, D1) = 1/3 × log₁₀(4) = 0.200687 and P(flight \| book) = 2 / 2 = 1.0, both matching the library |
 
+### Part B1, C1, C2, D1 results (CBOW)
+
+| Task | Result |
+|------|--------|
+| B1 Word2Vec CBOW | `sg=0`, trained on 14,429 tweets. Vocabulary 4,409 words. Vector size 100, window 5, min_count 2, 20 epochs, seed 42 (Skip-gram must use the same values, only `sg` changes) |
+| C1 Similar words | *bag*: luggage (0.89), baggage (0.85), suitcase (0.70). *refund*: receipt (0.84), partial (0.82), credit (0.77). *cancel*: reschedule (0.75), rebook (0.69). *delay*: maintenance (0.74), mechanical (0.71). *service*: svc (0.75), communication (0.68). A few weak neighbours (for example *second* for *delay*) because the corpus is small |
+| C2 Cosine similarity | Similar pairs: bag–luggage 0.894, delay–cancel 0.451. Unrelated pairs: pilot–refund −0.238, luggage–love −0.313 |
+| D1 Saving | Saved once to `models/word2vec_cbow.model`. Phase 3 loads it with `vectorize(text, "cbow")`, nothing is retrained |
+
 ---
 
 ## 15. Contributions (Assignment 2)
@@ -382,7 +405,7 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | Member | Contribution |
 |--------|--------------|
 | Maham Iqbal | Part A, count based representations (A1 to A4): wrote `src/corpus.py` (the shared Assignment 2 corpus that every part uses: removes repeated tweet IDs and empty tweets), `src/count_representations.py` (A1 Bag of Words with shape and sparsity, A2 TF-IDF with IDF tables and a worked example tweet, A3 unigram / bigram / trigram feature growth and sparsity with a min_df comparison) and `src/hand_worked_a4.py` (A4 TF-IDF weight and bigram probability with the class method, checked against scikit-learn). Built `notebook/part_a_count_representations.ipynb`, produced the Part A tables in `report/part_a/` and the figures `report/figures/part_a_*.png`, added scikit-learn and gensim to `requirements.txt` and did the A4 calculation by hand (`report/part_a/A4_hand_worked_scan.pdf`). |
-| Minahil Malik | _to be filled_ |
+| Minahil Malik | B1, C1, C2 and D1 (Word2Vec CBOW): wrote `src/cbow_train.py` (B1 trains Word2Vec with the CBOW variant, `sg=0`, on the shared corpus with vector size 100, window 5, min_count 2, 20 epochs and seed 42; D1 saves it once to `models/word2vec_cbow.model` and writes `report/part_b/b1_cbow_info.json`) and `src/cbow_similarity.py` (C1 top 8 most similar words for `delay`, `bag`, `cancel`, `service` and `refund`; C2 cosine similarity of two similar and two unrelated word pairs). Results are in `report/part_c/c1_cbow_neighbours.csv` and `report/part_c/c2_cbow_cosine.csv`. |
 | Tamazur Fatima | _to be filled_ |
 | Hadi Faisal | _to be filled_ |
 | Sameer Javed | B3, C4 and D2: wrote `src/representation_comparison.py` (B3 CBOW vs Skip-gram: training time under identical settings and nearest neighbours for frequent vs rare words; C4 count-based vs learned representations: dimensionality, sparsity, vocabulary coverage, misspelled and unseen words, and word-pair similarity with `report/figures/c4_word_similarity.png`), `src/save_count_vectorizers.py` (D1 for the count-based side: saves the fitted BoW and TF-IDF vectorizers to `models/` once), `src/vectorize.py` (D2 Phase 3 interface: `vectorize()` takes a raw tweet, runs the Phase 1 cleaning and returns its vector under `bow`, `tfidf`, `cbow`, `skipgram` or `fasttext`, loading saved files only; `vectorize_many()` for batches) and `tests/test_vectorize.py` (11 tests run against every available representation). |
