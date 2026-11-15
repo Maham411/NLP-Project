@@ -398,6 +398,17 @@ Notebook version of Part A: open `notebook/part_a_count_representations.ipynb` a
 | C2 Cosine similarity | Similar pairs: bag–luggage 0.894, delay–cancel 0.451. Unrelated pairs: pilot–refund −0.238, luggage–love −0.313 |
 | D1 Saving | Saved once to `models/word2vec_cbow.model`. Phase 3 loads it with `vectorize(text, "cbow")`, nothing is retrained |
 
+### Part B3, C4, D1 and D2 results
+
+| Task | Result |
+|------|--------|
+| B3 CBOW vs Skip-gram | Same settings (100 dims, window 5, min_count 2, 20 epochs): Skip-gram took 2.6x as long to train (6.8 s vs 2.6 s). CBOW gave cleaner neighbours for frequent words (*bag*: luggage, baggage, item, suitcase; Skip-gram: apt, edinburgh, beg). Both gave noise for rare words (*turbulence*, 7 uses), so the expected Skip-gram advantage on rare words does not show on a 118k-token corpus |
+| C4 Dimensionality and sparsity | BoW / TF-IDF: 8,961 dimensions, 99.91% zeros, about 8 non-zero values per tweet. Word2Vec / fastText: 100 dense dimensions, almost no zeros |
+| C4 OOV handling | BoW / TF-IDF know all 8,961 corpus words but nothing new. Word2Vec drops words seen once (CBOW keeps 4,409, Skip-gram 4,467) and 18 tweets get an all-zero vector. fastText builds a vector for any word: *custmer* → customer, *refundd* → refund, *bagagge* → bagage / baggage, but *covid* → unrelated words |
+| C4 What each captures | Count-based word vectors score synonyms near zero (*bag / luggage* 0.03 BoW) because synonyms rarely share a tweet; learned models score them high (CBOW 0.89, Skip-gram 0.58, fastText 0.68). See `report/figures/c4_word_similarity.png` |
+| D1 Count-based saving | `src/save_count_vectorizers.py` saves `models/bow_vectorizer.joblib` and `models/tfidf_vectorizer.joblib` once |
+| D2 Interface | `vectorize(raw_tweet, representation)` cleans the tweet with the Phase 1 pipeline and returns its vector under `bow`, `tfidf`, `cbow`, `skipgram` or `fasttext`, loading saved files only; 11 tests pass for every representation |
+
 ---
 
 ## 15. Contributions (Assignment 2)

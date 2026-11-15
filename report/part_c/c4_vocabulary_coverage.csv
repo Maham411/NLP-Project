@@ -1,0 +1,6 @@
+representation,corpus_word_types,types_with_a_vector,token_coverage_percent,types_dropped
+bow,8961,8961,100.0,0
+tfidf,8961,8961,100.0,0
+cbow,8961,4409,96.16,4552
+skipgram,8961,4467,96.21,4494
+fasttext,8961,8961,100.0,0

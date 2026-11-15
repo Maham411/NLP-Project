@@ -1,0 +1,6 @@
+representation,type,dimensions,dimension_set_by,sparsity_percent,avg_nonzero_per_tweet,tweets_with_all_zero_vector,stored_MB,seconds_to_vectorize_corpus
+bow,count-based,8961,vocabulary size,99.912,7.9,0,1.42,0.09
+tfidf,count-based,8961,vocabulary size,99.912,7.9,0,1.42,0.09
+cbow,learned,100,vector_size hyperparameter,0.125,99.9,18,5.77,0.34
+skipgram,learned,100,vector_size hyperparameter,0.125,99.9,18,5.77,0.38
+fasttext,learned,100,vector_size hyperparameter,0.0,100.0,0,5.77,0.49

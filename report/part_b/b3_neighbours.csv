@@ -1,0 +1,6 @@
+word,count_in_corpus,cbow_top5,skipgram_top5
+bag,757,"luggage, baggage, item, suitcase, carry","apt, edinburgh, beg, wallet, pack"
+rude,139,"unhelpful, staff, employee, extremely, helpful","jacquie, plitt, unhelpful, attitude, uncaring"
+voucher,135,"hotel, cab, compensation, meal, pay","cot, standbye, plate, hotline, meal"
+layover,36,"divert, fwiw, catch, arrival, phoenix","morn, transit, realistic, rob, connector"
+turbulence,7,"beautiful, hat, hilarious, female, hot","female, moodlitmonday, goingforgreat, clarence, cream"
