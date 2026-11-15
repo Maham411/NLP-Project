@@ -1,0 +1,11 @@
+{
+  "n_documents": 14429,
+  "n_features": 8961,
+  "total_cells": 129298269,
+  "non_zero_cells": 113729,
+  "zero_cells": 129184540,
+  "sparsity_percent": 99.912,
+  "avg_non_zero_per_doc": 7.88,
+  "sparse_matrix_MB": 1.42,
+  "dense_matrix_MB_if_float64": 1034.4
+}
