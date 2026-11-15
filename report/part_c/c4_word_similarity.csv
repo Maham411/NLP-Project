@@ -1,0 +1,9 @@
+pair,kind,bow,tfidf,cbow,skipgram,fasttext
+bag / luggage,related,0.033,0.023,0.894,0.577,0.681
+delay / late,related,0.067,0.055,0.572,0.515,0.531
+great / awesome,related,0.033,0.019,0.851,0.615,0.684
+rude / unhelpful,related,0.153,0.13,0.817,0.736,0.748
+voucher / compensation,related,0.014,0.012,0.718,0.495,0.571
+bag / thank,unrelated,0.047,0.03,-0.008,0.222,0.298
+pilot / refund,unrelated,0.0,0.0,-0.238,0.203,0.273
+snow / happyface,unrelated,0.0,0.0,0.261,0.195,0.313

@@ -1,0 +1,293 @@
+{
+  "documents": 14429,
+  "representations": [
+    "bow",
+    "tfidf",
+    "cbow",
+    "skipgram",
+    "fasttext"
+  ],
+  "c4_dimensionality_sparsity": [
+    {
+      "representation": "bow",
+      "type": "count-based",
+      "dimensions": 8961,
+      "dimension_set_by": "vocabulary size",
+      "sparsity_percent": 99.912,
+      "avg_nonzero_per_tweet": 7.9,
+      "tweets_with_all_zero_vector": 0,
+      "stored_MB": 1.42,
+      "seconds_to_vectorize_corpus": 0.09
+    },
+    {
+      "representation": "tfidf",
+      "type": "count-based",
+      "dimensions": 8961,
+      "dimension_set_by": "vocabulary size",
+      "sparsity_percent": 99.912,
+      "avg_nonzero_per_tweet": 7.9,
+      "tweets_with_all_zero_vector": 0,
+      "stored_MB": 1.42,
+      "seconds_to_vectorize_corpus": 0.09
+    },
+    {
+      "representation": "cbow",
+      "type": "learned",
+      "dimensions": 100,
+      "dimension_set_by": "vector_size hyperparameter",
+      "sparsity_percent": 0.125,
+      "avg_nonzero_per_tweet": 99.9,
+      "tweets_with_all_zero_vector": 18,
+      "stored_MB": 5.77,
+      "seconds_to_vectorize_corpus": 0.34
+    },
+    {
+      "representation": "skipgram",
+      "type": "learned",
+      "dimensions": 100,
+      "dimension_set_by": "vector_size hyperparameter",
+      "sparsity_percent": 0.125,
+      "avg_nonzero_per_tweet": 99.9,
+      "tweets_with_all_zero_vector": 18,
+      "stored_MB": 5.77,
+      "seconds_to_vectorize_corpus": 0.38
+    },
+    {
+      "representation": "fasttext",
+      "type": "learned",
+      "dimensions": 100,
+      "dimension_set_by": "vector_size hyperparameter",
+      "sparsity_percent": 0.0,
+      "avg_nonzero_per_tweet": 100.0,
+      "tweets_with_all_zero_vector": 0,
+      "stored_MB": 5.77,
+      "seconds_to_vectorize_corpus": 0.49
+    }
+  ],
+  "c4_vocabulary_coverage": [
+    {
+      "representation": "bow",
+      "corpus_word_types": 8961,
+      "types_with_a_vector": 8961,
+      "token_coverage_percent": 100.0,
+      "types_dropped": 0
+    },
+    {
+      "representation": "tfidf",
+      "corpus_word_types": 8961,
+      "types_with_a_vector": 8961,
+      "token_coverage_percent": 100.0,
+      "types_dropped": 0
+    },
+    {
+      "representation": "cbow",
+      "corpus_word_types": 8961,
+      "types_with_a_vector": 4409,
+      "token_coverage_percent": 96.16,
+      "types_dropped": 4552
+    },
+    {
+      "representation": "skipgram",
+      "corpus_word_types": 8961,
+      "types_with_a_vector": 4467,
+      "token_coverage_percent": 96.21,
+      "types_dropped": 4494
+    },
+    {
+      "representation": "fasttext",
+      "corpus_word_types": 8961,
+      "types_with_a_vector": 8961,
+      "token_coverage_percent": 100.0,
+      "types_dropped": 0
+    }
+  ],
+  "c4_unseen_words": [
+    {
+      "word": "bagagge",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "bagage, baggagelost, baggage"
+    },
+    {
+      "word": "custmer",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "customer, nocareforcustomer, angrycustomer"
+    },
+    {
+      "word": "refundd",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "refund, refunded, refundable"
+    },
+    {
+      "word": "flihgt",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "fligt, fligth, flgt"
+    },
+    {
+      "word": "wifii",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "wifi, wi, entertain"
+    },
+    {
+      "word": "covid",
+      "bow": "all zeros",
+      "tfidf": "all zeros",
+      "cbow": "all zeros",
+      "skipgram": "all zeros",
+      "fasttext": "vector",
+      "fasttext_nearest": "contract, copy, co"
+    }
+  ],
+  "c4_word_similarity": [
+    {
+      "pair": "bag / luggage",
+      "kind": "related",
+      "bow": 0.033,
+      "tfidf": 0.023,
+      "cbow": 0.894,
+      "skipgram": 0.577,
+      "fasttext": 0.681
+    },
+    {
+      "pair": "delay / late",
+      "kind": "related",
+      "bow": 0.067,
+      "tfidf": 0.055,
+      "cbow": 0.572,
+      "skipgram": 0.515,
+      "fasttext": 0.531
+    },
+    {
+      "pair": "great / awesome",
+      "kind": "related",
+      "bow": 0.033,
+      "tfidf": 0.019,
+      "cbow": 0.851,
+      "skipgram": 0.615,
+      "fasttext": 0.684
+    },
+    {
+      "pair": "rude / unhelpful",
+      "kind": "related",
+      "bow": 0.153,
+      "tfidf": 0.13,
+      "cbow": 0.817,
+      "skipgram": 0.736,
+      "fasttext": 0.748
+    },
+    {
+      "pair": "voucher / compensation",
+      "kind": "related",
+      "bow": 0.014,
+      "tfidf": 0.012,
+      "cbow": 0.718,
+      "skipgram": 0.495,
+      "fasttext": 0.571
+    },
+    {
+      "pair": "bag / thank",
+      "kind": "unrelated",
+      "bow": 0.047,
+      "tfidf": 0.03,
+      "cbow": -0.008,
+      "skipgram": 0.222,
+      "fasttext": 0.298
+    },
+    {
+      "pair": "pilot / refund",
+      "kind": "unrelated",
+      "bow": 0.0,
+      "tfidf": 0.0,
+      "cbow": -0.238,
+      "skipgram": 0.203,
+      "fasttext": 0.273
+    },
+    {
+      "pair": "snow / happyface",
+      "kind": "unrelated",
+      "bow": 0.0,
+      "tfidf": 0.0,
+      "cbow": 0.261,
+      "skipgram": 0.195,
+      "fasttext": 0.313
+    }
+  ],
+  "b3_training_time": [
+    {
+      "model": "cbow",
+      "training_seconds": 2.59,
+      "vector_size": 100,
+      "window": 5,
+      "min_count": 2,
+      "epochs": 20,
+      "sg": 0,
+      "negative": 5,
+      "hs": 0,
+      "sample": 0.001
+    },
+    {
+      "model": "skipgram",
+      "training_seconds": 6.82,
+      "vector_size": 100,
+      "window": 5,
+      "min_count": 2,
+      "epochs": 20,
+      "sg": 1,
+      "negative": 5,
+      "hs": 0,
+      "sample": 0.001
+    }
+  ],
+  "b3_skipgram_to_cbow_time_ratio": 2.63,
+  "b3_neighbours": [
+    {
+      "word": "bag",
+      "count_in_corpus": 757,
+      "cbow_top5": "luggage, baggage, item, suitcase, carry",
+      "skipgram_top5": "apt, edinburgh, beg, wallet, pack"
+    },
+    {
+      "word": "rude",
+      "count_in_corpus": 139,
+      "cbow_top5": "unhelpful, staff, employee, extremely, helpful",
+      "skipgram_top5": "jacquie, plitt, unhelpful, attitude, uncaring"
+    },
+    {
+      "word": "voucher",
+      "count_in_corpus": 135,
+      "cbow_top5": "hotel, cab, compensation, meal, pay",
+      "skipgram_top5": "cot, standbye, plate, hotline, meal"
+    },
+    {
+      "word": "layover",
+      "count_in_corpus": 36,
+      "cbow_top5": "divert, fwiw, catch, arrival, phoenix",
+      "skipgram_top5": "morn, transit, realistic, rob, connector"
+    },
+    {
+      "word": "turbulence",
+      "count_in_corpus": 7,
+      "cbow_top5": "beautiful, hat, hilarious, female, hot",
+      "skipgram_top5": "female, moodlitmonday, goingforgreat, clarence, cream"
+    }
+  ]
+}

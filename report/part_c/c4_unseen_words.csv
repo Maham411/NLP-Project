@@ -1,0 +1,7 @@
+word,bow,tfidf,cbow,skipgram,fasttext,fasttext_nearest
+bagagge,all zeros,all zeros,all zeros,all zeros,vector,"bagage, baggagelost, baggage"
+custmer,all zeros,all zeros,all zeros,all zeros,vector,"customer, nocareforcustomer, angrycustomer"
+refundd,all zeros,all zeros,all zeros,all zeros,vector,"refund, refunded, refundable"
+flihgt,all zeros,all zeros,all zeros,all zeros,vector,"fligt, fligth, flgt"
+wifii,all zeros,all zeros,all zeros,all zeros,vector,"wifi, wi, entertain"
+covid,all zeros,all zeros,all zeros,all zeros,vector,"contract, copy, co"
