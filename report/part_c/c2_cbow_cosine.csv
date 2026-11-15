@@ -1,0 +1,5 @@
+expected,word_1,word_2,cosine
+similar,delay,cancel,0.451
+similar,bag,luggage,0.8944
+unrelated,pilot,refund,-0.238
+unrelated,luggage,love,-0.313
