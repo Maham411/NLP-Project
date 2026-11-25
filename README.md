@@ -67,12 +67,12 @@ Phase 1 turns the raw tweets into a clean, well-documented, analysis-ready corpu
 │       └── normalized_tweets.csv
 ├── notebook/
 │   ├── data_analysis.ipynb           # Task 2: exploration
-│   ├── tokenization_comparison.ipynb # Task 3: tokenization (to be merged)
+│   ├── tokenization_comparison.ipynb # Task 3: tokenization
 │   └── normalization_examples.ipynb  # Task 4: normalization
 ├── src/
 │   ├── load_data.py                  # Task 1: downloads / loads the raw data
 │   ├── data_analysis.py              # Task 2: exploration & statistics
-│   ├── tokenization.py               # Task 3: tokenizer comparison (to be merged)
+│   ├── tokenization.py               # Task 3: tokenizer comparison
 │   ├── regex_patterns.py             # Task 3: regular expressions
 │   ├── noise_removal.py              # Task 3: noise removal
 │   ├── noise_removal_analysis.py
